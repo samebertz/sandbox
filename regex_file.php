@@ -8,6 +8,7 @@
 // Third, after writing this file and all the comments, I realized that I could further abstract the process. I could have only a single function, which would accept two parameters, the first being the key to the site specific array, the second being the key to the actual expression needed. This method suffers the same difficulty as the second way.
 // Between these three, I would prefer to  implement the third method, but I need to figure out how to get around the backreferencing problem. One inelegant solution would be to just include a second (blank) subpattern in the regexs with only one subpattern, and always concatenate the backreference to $1 and $2.
 // Eureka! Just as I finished writing that last sentence about the inelegant solution, I realized that if I implement the strategy outlined below, regarding the use of subpatterns and extracting the data from the matched array, I could just iterate through said array and concatenate all of the subpatterns together, which eliminates the need for backrefs altogether. It sounds so simple now, I can't believe it took me this long to connect the dots. I obviously have yet to implement this, but at least I know now what I am going to do.
+	// EDIT: [11-13-2012] I partially implemented this in a terrible form. It will eventually need some fixing.
 
 
 // Use of subpatterns could eliminate redundancy. Something to look into.
@@ -15,6 +16,47 @@
 // Also, after commenting all of these, and adding the reular expressions for Carlson, I realize that I could probably get away with a single regular expression for extracting info. All I would need is the extract ecpression, since it is almost identical, and works as a matcher, and then I can just extract the stuff I need from the subpatterns.
 
 
+// ---------------------------------- //
+// Here is the new, WIP, abstracted version of the regular expression array.
+function get_regex($array, $key) {
+	$regex = array(
+		array(
+			'http://www.physics.umn.edu/events/calendar/spa.all/future',
+			'@\<div class\="cal_day"\>.*?\<\!\-\- cal_day .*?\-\-\>@s',
+			'@\<div class\="cal_item"\>.*?\<\!\-\- cal item \-\-\>@s',
+			'@\<div class\="cal_day_title"\>(.*?)\<\/div\>@s',
+			'@\<div class\="cal_time"\>(.*?)&nbsp;(.*?)\:\<\/div\>@s',
+			'@\<div class\="cal_title"\>.*?in (.*?)&nbsp;(.*?)\<\/div\>@s',
+			'@\<div class\="cal_title"\>.*?\<b\>(.*?)\<\/b\>.*?\<\/div\>@s',
+			'@\<div class\="cal_subject"\>.*?&nbsp;(.*?)\<\/div\>@s',
+			'@\<div class\="cal_speaker"\>.*?&nbsp;(.*?)\<\/div\>@s'
+		),
+		array(
+			'http://www.csom.umn.edu/events/monthly?mode=monthly&startDate='.(new DateTime('now'))->format('m/d/Y'),
+			'@\<h2\>.*?\<\/ol\>@s',
+			'@\<li\>.*?\<\/li\>@s',
+			'@\<h2\>(.*?)\<\/h2\>@s',
+			'@\<div class\="event-time"\>(.*?)\<\/div\>@s',
+			'@\<p\>.*?Location: (.*?)\<\/p\>@s',
+			'@\<h3\>\<a.*?\>(.*?)\<\/a\>\<\/h3\>@s',
+			'@\<p\>.*?(Sponsored.*?):(.*?)\<\/p\>@s',
+			'@YOU SHALL NOT MATCH@s'
+		)
+	);
+	// The odd call at the end of the second url could be removed, and the two lines below this uncommented, for the same effect.
+	// $date = getdate();
+	// $regex[1][0] .= $date['mon'].'/'.$date['mday'].'/'.$date['year'];
+	return $regex[$array][$key];
+}
+// ---------------------------------- //
+
+
+
+// ---------------------------------- //
+// Below is the original form of this file, with lots of comments.
+// ---------------------------------- //
+
+/*
 $regex = array(
 'physics' => array(
 
@@ -134,4 +176,5 @@ $regex = array(
 )
 );
 print_r($regex);
+*/
 ?>
