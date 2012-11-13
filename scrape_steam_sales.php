@@ -1,23 +1,46 @@
 <?php
+// I uncomment this line when I need to read things. BEWARE... of reading... things...
 // header("Content-type: text/plain");
 
-$html = file_get_contents('http://store.steampowered.com/');
-$get_num = array();
-preg_match('@id\="tab_Discounts_count_end"\>[0-9]*?\<\/span\> of (\d*).*?\<\/div\>@s', $html, $get_num);
-$get_num = $get_num[1];
+
+// This is just to get the number of sales, to form the query string.
+$html = file_get_contents('http://store.steampowered.com/'); // Get the html to extract the number of sales.
+$get_num = array(); // ARRAYS!
+preg_match('@id\="tab_Discounts_count_end"\>[0-9]*?\<\/span\> of (\d*).*?\<\/div\>@s', $html, $get_num); // Find the number of sales with this stupidly long regex. Probably could be shortened, but I'm LAZY.
+$get_num = $get_num[1]; // Get the subpattern with the number of sales.
+
+// This is the real url to parse for the sales, with the total number appended on the end. It would possibly work with a start of 1, but I haven't testet that. I'm LAZY.
 $url = 'http://store.steampowered.com/search/tab?bHoverEnabled=true&cc=US&l=english&style=&navcontext=1_4_4_&tab=Discounts&start=0&count=';
 $html = file_get_contents($url . $get_num);
 
-$regex = '@\<h4>(.*?)\<\/h4\>@s';
-$array = array();
-preg_match_all($regex, $html, $array);
-$array = $array[1];
+
+// This is the surprisingly small piece of code that actually parses the html for the names of the games and DLC that are on sale.
+$regex = '@\<h4>(.*?)\<\/h4\>@s'; // This regex has a subpattern where the name of the game is nestled in h4 tags inside of each sale div.
+// Luckily, the only h4 tags are around those titles, so I didn't have to iterate through each sale. Woo!
+$array = array(); // ARRAYS!
+preg_match_all($regex, $html, $array); // Match those patterns!
+$array = $array[1]; // Oh yeah! Extracting subpatterns!
+
+// Aaaaaand, print it out so I can see that it worked.
 foreach ($array as $title) {
-	print_r($title.'<br />');
+	print_r($title.'<br />'); 
 }
 
+// Weird issues with the tm, works on race stars but not hitman.
+// I recall looking into it, and I think it is just based on the publisher's naming.
 // F1 RACE STARS™
 // Hitman: Absolution™
+
+
+
+// ---------------------------------------- //
+// Below this is some other crap I wrote,   //
+// It probably didn't work, which is why    //
+// it is all commented out. Good luck       //
+// deciphering it, I probably won't comment //
+// it, since I can't even remember what I   //
+// was trying to do.                        //
+// ---------------------------------------- //
 
 // print_r($html);
 // print_r($array);

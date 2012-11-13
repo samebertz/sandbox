@@ -1,5 +1,18 @@
 <?php
+// I started writing this file just to keep track of all the regular expressions that I am using, but then I realized I could use it to abstract all of the patterns, which would reduce the number of long string mucking up my actual code. I have (hopefully) succesfully gotten all of the patterns in here, but due to a number of decisions I have to make about how to abstract them, I haven't actually done it yet. I am terrible at making decisions. So, this is definitely a WIP.
+
+
+// Here are some of the ways I have though to abstract this:
+// First, I was just going to have some arrays in this file, with the regular expressions attached to nice concise-but-descriptive and unique keys, so I could just reference the array I wanted, and the key I wanted. Then, I read some peoples' thoughts on global variables, and decided that this probably wasn't the best approach. (For those of you interested, the thoughts on global variables are here: http://stackoverflow.com/questions/5166087/php-global-in-functions)
+// Second, I thought of just creating a function for each array, which would accept a key, and return the right regex. This solves the issues of scope, and provides a nice level of abstraction. The problem with this is that I would need a way to also return the backreferences for subpattern matching, and I havent quite figured out how to do that.
+// Third, after writing this file and all the comments, I realized that I could further abstract the process. I could have only a single function, which would accept two parameters, the first being the key to the site specific array, the second being the key to the actual expression needed. This method suffers the same difficulty as the second way.
+// Between these three, I would prefer to  implement the third method, but I need to figure out how to get around the backreferencing problem. One inelegant solution would be to just include a second (blank) subpattern in the regexs with only one subpattern, and always concatenate the backreference to $1 and $2.
+// Eureka! Just as I finished writing that last sentence about the inelegant solution, I realized that if I implement the strategy outlined below, regarding the use of subpatterns and extracting the data from the matched array, I could just iterate through said array and concatenate all of the subpatterns together, which eliminates the need for backrefs altogether. It sounds so simple now, I can't believe it took me this long to connect the dots. I obviously have yet to implement this, but at least I know now what I am going to do.
+
+
 // Use of subpatterns could eliminate redundancy. Something to look into.
+// Looked into somewhat. I put in some notes that describe ways to take advantage of subpatterns.
+// Also, after commenting all of these, and adding the reular expressions for Carlson, I realize that I could probably get away with a single regular expression for extracting info. All I would need is the extract ecpression, since it is almost identical, and works as a matcher, and then I can just extract the stuff I need from the subpatterns.
 
 
 $regex = array(
