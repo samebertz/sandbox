@@ -1,3 +1,2 @@
-This is where I play! Feel free to pillage and plunder!
-
--Sam
+## Sandbox
+A varied collection of small projects, exercises, and solutions.
